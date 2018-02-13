@@ -1,0 +1,22 @@
+<html>
+<body>
+    <form id="form">
+        <input id="rawTextInput" type="text" placeholder="Type message here" />
+    </form>
+    <script>
+        // TODO es6 conversion pipeline
+        // TODO static serving so this can be hosted somewhere
+        // TODO url must be configurable/read from somewhere else
+        const ws = new WebSocket('ws://localhost:3000');
+        ws.onmessage = message => {
+            console.log('We received', message);
+        };
+        document.getElementById('form').addEventListener('submit', e=>{
+            e.preventDefault();
+            const value = document.getElementById('rawTextInput').value;
+            console.log('Sending', value, 'to the socket');
+            ws.send(value);
+        });
+    </script>
+</body>
+</html>
