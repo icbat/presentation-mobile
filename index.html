@@ -1,22 +1,45 @@
 <html>
 <body>
-    <form id="form">
-        <input id="rawTextInput" type="text" placeholder="Type message here" />
+    <form id="newRoom">
+        <input  type="text" placeholder="Create room" />
+    </form>
+    <form id="joinRoom">
+        <input type="text" placeholder="Join a room by code" />
+    </form>
+    <form id="sendToMyRoom">
+        <input type="text" placeholder="Send message to your room" />
     </form>
     <script>
         // TODO es6 conversion pipeline
         // TODO static serving so this can be hosted somewhere
         // TODO url must be configurable/read from somewhere else
+        console.log('connecting!');
         const ws = new WebSocket('ws://localhost:3000');
         ws.onmessage = message => {
             console.log('We received', message);
         };
-        document.getElementById('form').addEventListener('submit', e=>{
-            e.preventDefault();
-            const value = document.getElementById('rawTextInput').value;
-            console.log('Sending', value, 'to the socket');
-            ws.send(value);
-        });
+        ws.onopen = () => {
+            console.log('we are conneted');
+            setupListener('newRoom');
+            setupListener('joinRoom');
+            setupListener('sendToMyRoom');
+        };
+
+        const setupListener = id => {
+            document.getElementById(id).addEventListener('submit', function(e) {
+                e.preventDefault();
+                const value = this.getElementsByTagName('input')[0].value;
+                console.log('Sending', value, 'to the socket');
+                ws.send(buildMessage(id, value));
+            });
+        };
+
+        const buildMessage = (type, text) => {
+            return JSON.stringify({
+                type: type,
+                text: text,
+            });
+        };
     </script>
 </body>
 </html>
