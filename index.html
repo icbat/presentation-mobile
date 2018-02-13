@@ -1,14 +1,17 @@
 <html>
 <body>
-    <form id="newRoom">
-        <input  type="text" placeholder="Create room" />
+    <form id="createNewRoom">
+        <input type="submit" value="Create room" />
     </form>
     <form id="joinRoom">
-        <input type="text" placeholder="Join a room by code" />
+        <input name="room" placeholder="Join a room" />
     </form>
-    <form id="sendToMyRoom">
-        <input type="text" placeholder="Send message to your room" />
+    <form id="sendMessageToRoom">
+        <input name="room" type="text" placeholder="Which room to hit" />
+        <input name="message" type="text" placeholder="Send message to your room" />
+        <input type="submit" value="Send" />
     </form>
+    <ul id="messages"></ul>
     <script>
         // TODO es6 conversion pipeline
         // TODO static serving so this can be hosted somewhere
@@ -16,28 +19,40 @@
         console.log('connecting!');
         const ws = new WebSocket('ws://localhost:3000');
         ws.onmessage = message => {
-            console.log('We received', message);
+            console.log('raw message', message);
+            const parsed = JSON.parse(message.data);
+            console.log('We received', parsed);
+            document.getElementById('messages').insertAdjacentHTML('beforeend', `<li><b>Success? ${parsed.success}</b> <b>${parsed.room}</b>:${parsed.message}</li>`);
         };
         ws.onopen = () => {
-            console.log('we are conneted');
-            setupListener('newRoom');
-            setupListener('joinRoom');
-            setupListener('sendToMyRoom');
-        };
+            console.log('we are conneted, setting up input listeners');
+            document.getElementById('createNewRoom').addEventListener('submit', function(event) {
+                event.preventDefault();
 
-        const setupListener = id => {
-            document.getElementById(id).addEventListener('submit', function(e) {
-                e.preventDefault();
-                const value = this.getElementsByTagName('input')[0].value;
-                console.log('Sending', value, 'to the socket');
-                ws.send(buildMessage(id, value));
+                return ws.send(buildMessage('createNewRoom'));
+            });
+            document.getElementById('joinRoom').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const room = document.querySelector('#joinRoom input[name=room]').value;
+
+                ws.send(buildMessage('joinRoom', room));
+            });
+            document.getElementById('sendMessageToRoom').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const room = document.querySelector('#sendMessageToRoom input[name=room]').value;
+                const message = document.querySelector('#sendMessageToRoom input[name=message]').value;
+
+                ws.send(buildMessage('sendMessageToRoom', room, message));
             });
         };
 
-        const buildMessage = (type, text) => {
+        const buildMessage = (type, room, message) => {
             return JSON.stringify({
                 type: type,
-                text: text,
+                room: room,
+                message: message,
             });
         };
     </script>
