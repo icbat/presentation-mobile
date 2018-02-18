@@ -8,6 +8,7 @@ writeEnvFile(socketServerUrl, require('fs'));
 
 // Serve /static
 server.use(express.static('static'));
+server.use(express.static('generated'));
 
 const port = process.env.PORT || 3001;
 server.listen(port);

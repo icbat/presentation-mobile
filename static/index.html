@@ -12,12 +12,11 @@
         <input type="submit" value="Send" />
     </form>
     <ul id="messages"></ul>
+    <script type="text/javascript" src="env.js"></script>
     <script>
         // TODO es6 conversion pipeline
-        // TODO static serving so this can be hosted somewhere
-        // TODO url must be configurable/read from somewhere else
         console.log('connecting!');
-        const ws = new WebSocket('ws://localhost:3000');
+        const ws = new WebSocket(env.socketServerUrl);
         ws.onmessage = message => {
             console.log('raw message', message);
             const parsed = JSON.parse(message.data);

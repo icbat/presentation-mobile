@@ -8,7 +8,7 @@ test('writeEnvFile writes to the right place', t => {
 
     writeEnvFile('my url', fs);
 
-    t.is(fs.spy.file, 'generated/env.json');
+    t.is(fs.spy.file, 'generated/env.js');
 });
 
 test('writeEnvFile writes JSON with the socket server url', t => {
@@ -18,9 +18,14 @@ test('writeEnvFile writes JSON with the socket server url', t => {
 
     writeEnvFile(expected, fs);
 
-    const parsed = JSON.parse(fs.spy.data);
+    const fileContents = fs.spy.data;
+    const parts = fileContents.split('=');
+    const scriptification = parts[0];
+    const data = parts[1];
+    const parsed = JSON.parse(data);
 
     t.is(parsed.socketServerUrl, expected);
+    t.is(scriptification, 'var env ');
 });
 
 test('writeEnvFile creates directory if needed', t => {
