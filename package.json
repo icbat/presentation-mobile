@@ -1,0 +1,26 @@
+{
+  "name": "presentation-mobile",
+  "version": "1.0.0",
+  "description": "The companion app to Presenting...",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "ava": "^0.25.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/icbat/presentation-mobile.git"
+  },
+  "author": "Evan Cobb",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/icbat/presentation-mobile/issues"
+  },
+  "homepage": "https://github.com/icbat/presentation-mobile#readme"
+}
