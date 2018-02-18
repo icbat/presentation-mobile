@@ -14,16 +14,15 @@
     <ul id="messages"></ul>
     <script type="text/javascript" src="env.js"></script>
     <script>
-        // TODO es6 conversion pipeline
-        console.log('connecting!');
-        const ws = new WebSocket(env.socketServerUrl);
-        ws.onmessage = message => {
+        console.log('connecting to', env.socketServerUrl);
+        var ws = new WebSocket(env.socketServerUrl);
+        ws.onmessage = function (message) {
             console.log('raw message', message);
-            const parsed = JSON.parse(message.data);
+            var parsed = JSON.parse(message.data);
             console.log('We received', parsed);
             document.getElementById('messages').insertAdjacentHTML('beforeend', `<li><b>Success? ${parsed.success}</b> <b>${parsed.room}</b>:${parsed.message}</li>`);
         };
-        ws.onopen = () => {
+        ws.onopen = function() {
             console.log('we are conneted, setting up input listeners');
             document.getElementById('createNewRoom').addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -33,21 +32,21 @@
             document.getElementById('joinRoom').addEventListener('submit', function(event) {
                 event.preventDefault();
 
-                const room = document.querySelector('#joinRoom input[name=room]').value;
+                var room = document.querySelector('#joinRoom input[name=room]').value;
 
                 ws.send(buildMessage('joinRoom', room));
             });
             document.getElementById('sendMessageToRoom').addEventListener('submit', function(event) {
                 event.preventDefault();
 
-                const room = document.querySelector('#sendMessageToRoom input[name=room]').value;
-                const message = document.querySelector('#sendMessageToRoom input[name=message]').value;
+                var room = document.querySelector('#sendMessageToRoom input[name=room]').value;
+                var message = document.querySelector('#sendMessageToRoom input[name=message]').value;
 
                 ws.send(buildMessage('sendMessageToRoom', room, message));
             });
         };
 
-        const buildMessage = (type, room, message) => {
+        const buildMessage = function(type, room, message) {
             return JSON.stringify({
                 type: type,
                 room: room,
