@@ -57,3 +57,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# Environment variable file to pass to static code from config
+generated/
